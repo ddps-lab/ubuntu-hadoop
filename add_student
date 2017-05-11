@@ -1,0 +1,57 @@
+#! /bin/bash
+
+STUDENT_FRONT="sudo docker run -it --name"
+SLAVE_COMMAND=""
+COMMAND_LAST="sungsu7437/ubuntu_hadoop /bin/bash"
+SLAVE="slave"
+ADDHOST='--add-host='
+IP="10.0.0."
+STUDENTIP10="10.0.0.10"
+STUDENTIP1="10.0.0.1"
+
+numOfContaiers=1
+numOfAddHosts=1
+numOfCores=1
+coreNumber=1
+portNumber=2
+
+if [[ -z "$4" ]]; then
+	echo "format is wrong"
+	echo "./add_studnet network-name student-from student-to number-of-hosts"
+	echo "ex) ./add_student my-net 1 5 10"
+	echo "network is my-net, student from 1, student to 5, number of hosts=10"
+	exit 0
+fi
+	
+
+numOfContaiers=$2
+while [ $numOfContaiers != $(($3+1)) ];
+do
+	 if [ $numOfContaiers -lt 10 ]; then
+                SLAVE_COMMAND="$STUDENT_FRONT student$numOfContaiers --network $1 --ip $STUDENTIP10$numOfContaiers --memory 2g --add-host=master:10.0.0.2"
+        else
+                SLAVE_COMMAND="$STUDENT_FRONT student$numOfContaiers --network $1 --ip $STUDENTIP1$numOfContaiers --memory 2g --add-host=master:10.0.0.2"
+        fi
+
+	numOfAddHosts=1
+	while [ $numOfAddHosts != $(($4+1)) ];
+	do
+        	SLAVE_COMMAND="$SLAVE_COMMAND $ADDHOST$SLAVE$numOfAddHosts:$IP$(($numOfAddHosts+2))"
+       		numOfAddHosts=$(($numOfAddHosts+1))
+	done
+	
+	numOfCores=1
+	SLAVE_COMMAND="$SLAVE_COMMAND --cpuset-cpus=$(($(($(($coreNumber-1))*2))+55))"
+	while [ $numOfCores != 2 ];
+	do
+		SLAVE_COMMAND="$SLAVE_COMMAND,$(($(($(($coreNumber-1))*2))+55-$numOfCores))"		
+		numOfCores=$(($numOfCores+1))
+	done
+
+	$SLAVE_COMMAND -p 2200$portNumber:2200$portNumber --storage-opt size=500G $COMMAND_LAST
+	SLAVE_COMMAND=''
+	numOfContaiers=$(($numOfContaiers+1))
+	coreNumber=$(($coreNumber-1))
+	portNumber=$(($portNumber+1))
+done
+
