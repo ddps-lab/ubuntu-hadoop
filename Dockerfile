@@ -22,6 +22,8 @@ RUN tar -xzvf jdk-8u131-linux-x64.tar.gz -C /usr/java/default --strip-components
 ENV JAVA_HOME /usr/java/default/
 ENV PATH $PATH:$JAVA_HOME/bin
 
+RUN rm -rf /usr/bin/java
+RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # hadoop
 RUN wget http://mirror.navercorp.com/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz

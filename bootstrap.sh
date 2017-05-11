@@ -9,11 +9,6 @@ service ssh start
 #$HADOOP_PREFIX/sbin/start-dfs.sh
 #$HADOOP_PREFIX/sbin/start-yarn.sh
 
-rm -rf /usr/bin/java
-ln -s $JAVA_HOME/bin/java /usr/bin/java
-
-echo $JAVA_HOME
-java -V
 
 CMD=${1:-"exit 0"}
 if [[ "$CMD" == "-d" ]];
