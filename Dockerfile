@@ -19,7 +19,7 @@ RUN wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=acc
 RUN tar -xzvf jdk-8u131-linux-x64.tar.gz -C /usr/java/default --strip-components=1
 
 # java env
-ENV JAVA_HOME /usr/java/default/
+ENV JAVA_HOME /usr/java/default
 ENV PATH $PATH:$JAVA_HOME/bin
 
 RUN rm -rf /usr/bin/java
