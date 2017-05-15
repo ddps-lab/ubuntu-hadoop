@@ -1,4 +1,4 @@
-FROM sungsu7437/ubuntu:16.04
+FROM kmubigdata/ubuntu-1604
 MAINTAINER kimjeongchul
 
 USER root
