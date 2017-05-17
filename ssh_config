@@ -2,4 +2,4 @@ Host *
   UserKnownHostsFile /dev/null
   StrictHostKeyChecking no
   LogLevel quiet
-  Port 2022
+  Port 2122
