@@ -1,5 +1,5 @@
 Host *
   UserKnownHostsFile /dev/null
   StrictHostKeyChecking no
-  LogLevel quiet
+  LogLevel info
   Port 2122
