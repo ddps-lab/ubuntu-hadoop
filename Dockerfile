@@ -12,6 +12,7 @@ RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
 RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
 RUN ssh-keygen -q -N "" -t rsa -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/authorized_keys
 
 # java
 RUN mkdir -p /usr/java/default
@@ -26,10 +27,10 @@ RUN rm -rf /usr/bin/java
 RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # hadoop
-RUN wget http://mirror.navercorp.com/apache/hadoop/common/hadoop-2.7.3/hadoop-2.7.3.tar.gz
-RUN tar -xvzf hadoop-2.7.3.tar.gz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.7.3 hadoop
-RUN rm hadoop-2.7.3.tar.gz
+RUN wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
+RUN tar -xvzf hadoop-2.8.0.tar.gz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-2.8.0 hadoop
+RUN rm hadoop-2.8.0.tar.gz
 
 # hadoop env
 ENV HADOOP_PREFIX /usr/local/hadoop
@@ -60,12 +61,6 @@ ADD yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 ADD slaves $HADOOP_PREFIX/etc/hadoop/slaves
 
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
-
-# fixing the libhadoop.so like a boss
-RUN rm -rf /usr/local/hadoop/lib/native/*
-RUN wget http://dl.bintray.com/sequenceiq/sequenceiq-bin/hadoop-native-64-2.7.0.tar
-RUN tar xvf hadoop-native-64-2.7.0.tar -C /usr/local/hadoop/lib/native/
-RUN rm hadoop-native-64-2.7.0.tar
 
 ADD ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
