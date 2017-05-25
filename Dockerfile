@@ -33,43 +33,44 @@ RUN cd /usr/local && ln -s ./hadoop-2.8.0 hadoop
 RUN rm hadoop-2.8.0.tar.gz
 
 # hadoop env
-ENV HADOOP_PREFIX /usr/local/hadoop
-ENV HADOOP_COMMON_HOME /usr/local/hadoop
-ENV HADOOP_HDFS_HOME /usr/local/hadoop
-ENV HADOOP_MAPRED_HOME /usr/local/hadoop
-ENV HADOOP_YARN_HOME /usr/local/hadoop
-ENV HADOOP_CONF_DIR /usr/local/hadoop/etc/hadoop
-ENV YARN_CONF_DIR $HADOOP_PREFIX/etc/hadoop
-ENV PATH $PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin
+ENV HADOOP_HOME /usr/local/hadoop
+ENV HADOOP_PREFIX $HADOOP_HOME
+ENV HADOOP_COMMON_HOME $HADOOP_HOME
+ENV HADOOP_HDFS_HOME $HADOOP_HOME
+ENV HADOOP_MAPRED_HOME $HADOOP_HOME
+ENV HADOOP_YARN_HOME $HADOOP_HOME
+ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
+ENV YARN_CONF_DIR $HADOOP_HOME/etc/hadoop
+ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
-RUN mkdir -pv $HADOOP_PREFIX/input
-RUN mkdir -pv $HADOOP_PREFIX/dfs
-RUN mkdir -pv $HADOOP_PREFIX/dfs/name
-RUN mkdir -pv $HADOOP_PREFIX/dfs/data
-RUN mkdir -pv $HADOOP_PREFIX/tmp
+RUN mkdir -pv $HADOOP_HOME/input
+RUN mkdir -pv $HADOOP_HOME/dfs
+RUN mkdir -pv $HADOOP_HOME/dfs/name
+RUN mkdir -pv $HADOOP_HOME/dfs/data
+RUN mkdir -pv $HADOOP_HOME/tmp
 
-RUN cp $HADOOP_PREFIX/etc/hadoop/*.xml $HADOOP_PREFIX/input
+RUN cp $HADOOP_HOME/etc/hadoop/*.xml $HADOOP_HOME/input
 
 # pseudo distributed
-ADD hdfs-site.xml $HADOOP_PREFIX/etc/hadoop/hdfs-site.xml
-ADD core-site.xml $HADOOP_PREFIX/etc/hadoop/core-site.xml
-ADD mapred-site.xml $HADOOP_PREFIX/etc/hadoop/mapred-site.xml
-ADD yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
-ADD slaves $HADOOP_PREFIX/etc/hadoop/slaves
+ADD hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+ADD core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
+ADD mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
+ADD yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
+ADD slaves $HADOOP_HOME/etc/hadoop/slaves
 
-RUN $HADOOP_PREFIX/bin/hdfs namenode -format
+RUN $HADOOP_HOME/bin/hdfs namenode -format
 
 ADD ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 RUN chown root:root /root/.ssh/config
 
 # workingaround docker.io build error
-RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
-RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
-RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
+RUN ls -la $HADOOP_HOME/etc/hadoop/*-env.sh
+RUN chmod +x $HADOOP_HOME/etc/hadoop/*-env.sh
+RUN ls -la $HADOOP_HOME/etc/hadoop/*-env.sh
 
 # fix the 254 error code
 RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
