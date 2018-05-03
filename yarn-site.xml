@@ -17,15 +17,15 @@
         </property>
         <property>
                 <name>yarn.resourcemanager.resource-tracker.address</name>
-                <value>master:8025</value>
+                <value>localhost:8025</value>
         </property>
         <property>
                 <name>yarn.resourcemanager.scheduler.address</name>
-                <value>master:8030</value>
+                <value>localhost:8030</value>
         </property>
         <property>
                 <name>yarn.resourcemanager.address</name>
-                <value>master:8050</value>
+                <value>localhost:8050</value>
         </property>
         <property>
                 <name>yarn.nodemanager.resource.memory-mb</name>

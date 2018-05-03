@@ -6,8 +6,8 @@
 cd $HADOOP_PREFIX/share/hadoop/common ; for cp in ${ACP//,/ }; do  echo == $cp; curl -LO $cp ; done; cd -
 
 service ssh start
-#$HADOOP_PREFIX/sbin/start-dfs.sh
-#$HADOOP_PREFIX/sbin/start-yarn.sh
+$HADOOP_PREFIX/sbin/start-dfs.sh
+$HADOOP_PREFIX/sbin/start-yarn.sh
 
 
 CMD=${1:-"exit 0"}

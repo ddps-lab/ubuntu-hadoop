@@ -5,7 +5,7 @@
 	</property>
         <property>
                 <name>mapred.job.tracker</name>
-                <value>master:54311</value>
+                <value>localhost:54311</value>
         </property>
 	<property>
                 <name>mapreduce.map.memory.mb</name>

@@ -4,6 +4,7 @@ MAINTAINER kimjeongchul
 USER root
 
 # install dev tools
+RUN apt-get update
 RUN apt-get install -y curl openssh-server openssh-client rsync wget
 
 # passwordless ssh
@@ -15,21 +16,19 @@ RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 RUN chmod 600 /root/.ssh/authorized_keys
 
 # java
-RUN mkdir -p /usr/java/default
-RUN wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
-RUN tar -xzvf jdk-8u131-linux-x64.tar.gz -C /usr/java/default --strip-components=1
+RUN apt-get install -y --no-install-recommends openjdk-8-jdk
 
 # java env
-ENV JAVA_HOME /usr/java/default
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 ENV PATH $PATH:$JAVA_HOME/bin
 
 RUN rm -rf /usr/bin/java
 RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # hadoop
-RUN wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
-RUN tar -xvzf hadoop-2.8.0.tar.gz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.8.0 hadoop
+RUN wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.8.3/hadoop-2.8.3.tar.gz
+RUN tar -xvzf hadoop-2.8.3.tar.gz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-2.8.3 hadoop
 RUN rm hadoop-2.8.0.tar.gz
 
 # hadoop env
@@ -59,7 +58,6 @@ ADD hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 ADD core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
-ADD slaves $HADOOP_HOME/etc/hadoop/slaves
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format
 
