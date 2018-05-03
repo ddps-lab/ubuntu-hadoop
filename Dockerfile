@@ -19,17 +19,17 @@ RUN chmod 600 /root/.ssh/authorized_keys
 RUN apt-get install -y --no-install-recommends openjdk-8-jdk
 
 # java env
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $PATH:$JAVA_HOME/bin
 
-RUN rm -rf /usr/bin/java
-RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
+#RUN rm -rf /usr/bin/java
+#RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # hadoop
 RUN wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.8.3/hadoop-2.8.3.tar.gz
 RUN tar -xvzf hadoop-2.8.3.tar.gz -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.8.3 hadoop
-RUN rm hadoop-2.8.0.tar.gz
+RUN rm hadoop-2.8.3.tar.gz
 
 # hadoop env
 ENV HADOOP_HOME /usr/local/hadoop
@@ -42,7 +42,7 @@ ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
 ENV YARN_CONF_DIR $HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
-RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
 
 RUN mkdir -pv $HADOOP_HOME/input
