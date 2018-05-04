@@ -75,9 +75,9 @@ RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-COPY bootstrap.sh /etc/bootstrap.sh
-RUN chown root.root /etc/bootstrap.sh
-RUN chmod 700 /etc/bootstrap.sh
+#COPY bootstrap.sh /etc/bootstrap.sh
+#RUN chown root.root /etc/bootstrap.sh
+#RUN chmod 700 /etc/bootstrap.sh
 
 # HDFS ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
@@ -91,4 +91,4 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 # Other ports
 EXPOSE 49707 2122
 
-ENTRYPOINT ["/etc/bootstrap.sh"]
+#ENTRYPOINT ["/etc/bootstrap.sh"]
