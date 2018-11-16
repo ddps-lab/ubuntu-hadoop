@@ -18,6 +18,7 @@ RUN chmod 600 /root/.ssh/authorized_keys
 RUN mkdir -p /usr/java/default
 RUN wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
 RUN tar -xzvf jdk-8u131-linux-x64.tar.gz -C /usr/java/default --strip-components=1
+RUN rm jdk-8u131-linux-x64.tar.gz
 
 # java env
 ENV JAVA_HOME /usr/java/default
@@ -26,25 +27,29 @@ ENV PATH $PATH:$JAVA_HOME/bin
 RUN rm -rf /usr/bin/java
 RUN ln -s $JAVA_HOME/bin/java /usr/bin/java
 
+
 # hadoop
-RUN wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.8.0/hadoop-2.8.0.tar.gz
-RUN tar -xvzf hadoop-2.8.0.tar.gz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.8.0 hadoop
-RUN rm hadoop-2.8.0.tar.gz
+RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-3.1.1/hadoop-3.1.1.tar.gz
+RUN tar -xvzf hadoop-3.1.1.tar.gz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-3.1.1 hadoop
+RUN rm hadoop-3.1.1.tar.gz
 
 # hadoop env
 ENV HADOOP_HOME /usr/local/hadoop
-ENV HADOOP_PREFIX $HADOOP_HOME
 ENV HADOOP_COMMON_HOME $HADOOP_HOME
 ENV HADOOP_HDFS_HOME $HADOOP_HOME
 ENV HADOOP_MAPRED_HOME $HADOOP_HOME
 ENV HADOOP_YARN_HOME $HADOOP_HOME
 ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
-ENV YARN_CONF_DIR $HADOOP_HOME/etc/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
-RUN sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
-RUN sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+RUN echo "export JAVA_HOME=$JAVA_HOME" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export HDFS_DATANODE_USER=root" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export HDFS_NAMENODE_USER=root" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export HDFS_SECONDARYNAMENODE_USER=root" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
+    echo "export YARN_RESOURCEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
+    echo "export YARN_NODEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
+
 
 RUN mkdir -pv $HADOOP_HOME/input
 RUN mkdir -pv $HADOOP_HOME/dfs
@@ -94,3 +99,6 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 EXPOSE 49707 2122
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
+
+                                                                                    106,0-1       Bot
+
