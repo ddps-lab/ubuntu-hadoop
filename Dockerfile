@@ -64,7 +64,6 @@ ADD hdfs-site.xml $HADOOP_HOME/etc/hadoop/hdfs-site.xml
 ADD core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 ADD mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml
 ADD yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
-ADD slaves $HADOOP_HOME/etc/hadoop/slaves
 
 RUN $HADOOP_HOME/bin/hdfs namenode -format
 

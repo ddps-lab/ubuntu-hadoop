@@ -1,0 +1,25 @@
+#! /bin/bash
+
+numOfContainers=$1
+ADD_SLAVE=""
+RESULT=""
+
+if [[ -z "$2" ]]
+then
+        echo "파라미터가 없습니다."   
+        exit
+fi
+
+#$2-$1+1 개만큼 workers 파일 내에 slaves의 이름들을 추가한다. 
+#이 때 slave의 이름은 slave$numOfContainers 가 된다.
+
+WORKERS_FILE="/usr/local/hadoop/etc/hadoop/workers"
+while [ $numOfContainers -lt $(($2+1)) ];
+do
+        ADD_SLAVE="slave$numOfContainers'\'n"
+        RESULT="$RESULT$ADD_SLAVE"
+        numOfContainers=$(($numOfContainers+1))
+done
+
+sudo docker exec master bash -c "echo -e $RESULT > $WORKERS_FILE"
+
