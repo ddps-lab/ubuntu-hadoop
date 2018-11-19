@@ -1,0 +1,48 @@
+#! /bin/bash
+
+if [[ -z "$3" ]]; then
+        echo "-----------------------------------------------------------------"
+        echo "에러 : 파라미터가 없습니다"
+        echo ""
+        echo "run_hadoop 실행 방법)"
+        echo "./run_hadoop [네트워크 이름] [master 컨테이너 만듦 여부] [만들 slave 컨테이너의 그룹 넘버]"
+        echo ""
+        echo "예) ./run_hadoop my-net 1 1"
+        echo "master 컨테이너를 만들고(파라미터가 1 이기 때문에), slave1, slave2,.. slave6 컨테이너들을 만들고(파라미터가 1 이기 때문에) my-net 이라는 네트워크에 연결한다."
+        echo "예) ./run_hadoop my-net 0 2"
+        echo "master 컨테이너를 만들지 않고(파라미터가 0 이기 때문에), slave7, slave8,.. slave12 컨테이너들을 만들고(파라미터가 2 이기 때문에) my-net 이라는 네트워크에 연결한다."
+        echo "-----------------------------------------------------------------"
+        exit 0
+fi
+
+SERVER_MEMORY=50
+NUM_OF_SLAVES=6
+NUM_OF_CONTAINERS=`expr $2 + $NUM_OF_SLAVES`
+CONTAINER_MEMORY=`expr $SERVER_MEMORY / $NUM_OF_CONTAINERS`g
+
+RANDOM_NUM=`expr $RANDOM % 10000 + 30000`
+IMAGE_NAME="kmubigdata/ubuntu-hadoop"
+DOCKER_RUN="sudo docker run -dit --network $1 --name"
+MASTER_OPTION="--cpu-shares 1024 --memory $CONTAINER_MEMORY"
+SLAVE_OPTION="--cpu-shares 1024 --memory $CONTAINER_MEMORY --storage-opt size=300G "
+MASTER_COMMAND="$DOCKER_RUN master -p $RANDOM_NUM:8088 $MASTER_OPTION"
+COMMAND_LAST="$IMAGE_NAME /bin/bash"
+
+#두번째 파라미터가 1일 때, master 컨테이너를 만든다.
+if [ $2 == 1 ]; then
+        MASTER_COMMAND="$MASTER_COMMAND $COMMAND_LAST"
+        echo $MASTER_COMMAND
+fi
+
+numOfContainers=$((($3-1)*$NUM_OF_SLAVES+1))
+# NUM_OF_SLAVES 가 6일 때를 가정한다면
+# $3이 1이면 1~6 번째 slaves 를 만들고
+# 2라면 7~12 번째 slaves 를 만든다.
+# $3에 따라 slaves의 시작 숫자가 달라진다.
+while [ $numOfContainers -lt $(($3*$NUM_OF_SLAVES+1)) ];
+do
+        SLAVE_COMMAND="$DOCKER_RUN slave$numOfContainers $SLAVE_OPTION $COMMAND_LAST"
+        echo $SLAVE_COMMAND
+        numOfContainers=$(($numOfContainers+1))
+done
+
