@@ -98,6 +98,3 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 EXPOSE 49707 2122
 
 ENTRYPOINT ["/etc/bootstrap.sh"]
-
-                                                                                    106,0-1       Bot
-
