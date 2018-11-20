@@ -6,8 +6,16 @@ RESULT=""
 
 if [[ -z "$2" ]]
 then
-        echo "파라미터가 없습니다."   
-        exit
+        echo "-----------------------------------------------------------------"
+        echo "에러 : 파라미터가 없습니다"
+        echo ""
+        echo "change_slaves 실행 방법)"
+        echo "./change_slaves [만든 slave 컨테이너의 첫 범위] [만든 slave 컨테이너의 마지막 범위]"
+        echo ""
+        echo "예) ./change_slaves 1 3"
+        echo "파라미터가 1,3 이기 때문에, slave1, slave2, slave3 의 이름을 workers 파일 내에 개행을 포함하여 넣는다."
+        echo "-----------------------------------------------------------------"
+        exit 0
 fi
 
 #$2-$1+1 개만큼 workers 파일 내에 slaves의 이름들을 추가한다. 
