@@ -13,29 +13,36 @@ if [[ -z "$4" ]]; then
         exit 0
 fi
 
+NETWORK_NAME=$1
+MASTER_CREATE=$2
+CONTAINER_START_INDEX=$3
+CONTAINER_END_INDEX=$4
+
 SERVER_MEMORY=50
-NUM_OF_CONTAINERS=`expr $2 + $4 - $3 + 1`
-CONTAINER_MEMORY=`expr $SERVER_MEMORY / $NUM_OF_CONTAINERS`g
+NUM_OF_CONTAINERS=`expr $CONTAINER_END_INDEX - $CONTAINER_START_INDEX + 1`
+MASTER_CONTAINER_MEMORY="30g"
+SLAVE_CONTAINER_MEMORY=`expr $SERVER_MEMORY / $NUM_OF_CONTAINERS`g
+STORAGE_OPT_SIZE="300G"
 
 RANDOM_NUM=`expr $RANDOM % 10000 + 30000`
 IMAGE_NAME="kmubigdata/ubuntu-hadoop"
-DOCKER_RUN="sudo docker run -dit --network $1 --name"
-MASTER_OPTION="--cpu-shares 1024 --memory $CONTAINER_MEMORY"
-SLAVE_OPTION="--cpu-shares 1024 --memory $CONTAINER_MEMORY --storage-opt size=300G "
+DOCKER_RUN="sudo docker run -dit --network $NETWORK_NAME --name"
+MASTER_OPTION="--cpu-shares 1024 --memory $MASTER_CONTAINER_MEMORY"
+SLAVE_OPTION="--cpu-shares 1024 --memory $SLAVE_CONTAINER_MEMORY --storage-opt size=$STORAGE_OPT_SIZE "
 MASTER_COMMAND="$DOCKER_RUN master -p $RANDOM_NUM:8088 $MASTER_OPTION"
 COMMAND_LAST="$IMAGE_NAME /bin/bash"
 
 #두번째 파라미터가 1일 때, master 컨테이너를 만든다.
-if [ $2 == 1 ]; then
+if [ $MASTER_CREATE == 1 ]; then
         MASTER_COMMAND="$MASTER_COMMAND $COMMAND_LAST"
         $MASTER_COMMAND
 fi
 
-numOfContainers=$3
+numOfContainers=$CONTAINER_START_INDEX
 
 #세번째 파라미터 수부터 네번째 파라미터 수까지 올라가며 slave를 하나씩 만든다.
 #이 때 slave의 이름은 slave$numOfContainers 가 된다.
-while [ $numOfContainers -lt $(($4+1)) ];
+while [ $numOfContainers -lt $(($CONTAINER_END_INDEX+1)) ];
 do
         SLAVE_COMMAND="$DOCKER_RUN slave$numOfContainers $SLAVE_OPTION $COMMAND_LAST"
         $SLAVE_COMMAND
