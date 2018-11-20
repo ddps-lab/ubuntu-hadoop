@@ -24,7 +24,7 @@ NUM_OF_CONTAINERS=$CONTAINER_START_INDEX
 #$CONTAINER_END_INDEX-$CONTAINER_START_INDEX+1 개만큼 workers 파일 내에 slaves의 이름들을 추가한다. 
 #이 때 slave의 이름은 slave$NUM_OF_CONTAINERS 가 된다.
 
-WORKERS_FILE="$HADOOP_HOME/etc/hadoop/workers"
+WORKERS_FILE="\$HADOOP_HOME/etc/hadoop/workers"
 while [ $NUM_OF_CONTAINERS -lt $(($CONTAINER_END_INDEX+1)) ];
 do
         ADD_SLAVE="slave$NUM_OF_CONTAINERS'\'n"
