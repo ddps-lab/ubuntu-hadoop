@@ -30,15 +30,13 @@ Docker Container Orchestration 이 적용된 여러 서버에서, 각 서버의 
 서버가 3대(server1, server2, server3)가 있다고 가정하자.  
 각각의 서버에 들어가서 아래 명령어를 통해 run_hadoop 을 실행한다.
 
-```./run_hadoop [네트워크 이름] [master 컨테이너 만듦 여부] [만들 slave 컨테이너의 첫 범위] [만들 slave 컨테이너의 마지막 범위] ([총 slaves 컨테이너 개수])```
-
-**마지막 파라미터 값은 master 컨테이너를 만들 때(두번째 파라미터가 1일 때)만 사용됨*
+```./run_hadoop [네트워크 이름] [master 컨테이너 만듦 여부] [만들 slave 컨테이너의 첫 범위] [만들 slave 컨테이너의 마지막 범위] [총 slaves 컨테이너 개수]```
 
 예) 
 
 server1 에서 ```./run_hadoop my-net 1 1 3 10```  
-server2 에서 ```./run_hadoop my-net 0 4 6```  
-server3 에서 ```./run_hadoop my-net 0 7 10```
+server2 에서 ```./run_hadoop my-net 0 4 6 10```  
+server3 에서 ```./run_hadoop my-net 0 7 10 10```
 
 설명)
 
