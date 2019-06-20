@@ -50,7 +50,7 @@ RANDOM_NUM=`expr $RANDOM % 10000 + 30000`
 IMAGE_NAME="kmubigdata/ubuntu-hadoop"
 DOCKER_RUN="sudo docker run -dit --network $NETWORK_NAME --name"
 MASTER_OPTION="--cpu-shares 1024 --memory $(($MASTER_CONTAINER_MEMORY))g"
-SLAVE_OPTION="--cpu-shares 1024 --memory $(($SLAVE_CONTAINER_MEMORY))g --storage-opt size=$(($STORAGE_OPT_SIZE))g"
+SLAVE_OPTION="--cpu-shares 1024 --memory $(($SLAVE_CONTAINER_MEMORY))g"
 MASTER_COMMAND="$DOCKER_RUN master -p $RANDOM_NUM:8088 $MASTER_OPTION"
 COMMAND_LAST="$IMAGE_NAME /bin/bash"
 
